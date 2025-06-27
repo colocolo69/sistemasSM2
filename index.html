@@ -3,69 +3,116 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sistema de Repetición Espaciada (SM-2)</title>
+    <title>Cuestionario inc.</title>
     <style>
-        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; background-color: #f4f7f9; color: #333; line-height: 1.6; padding: 20px; box-sizing: border-box; }
-        #quiz-container, #wrong-answers-container { background-color: #ffffff; border-radius: 10px; box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1); padding: 30px; width: 100%; max-width: 800px; margin: 20px auto; text-align: center; }
-        h1, h2 { color: #2c3e50; }
-        #progress-counter { color: #7f8c8d; font-weight: 500; margin-bottom: 20px; }
-        #question-display, #answer-display { background-color: #ecf0f1; border-left: 5px solid #3498db; padding: 20px; margin-top: 20px; min-height: 50px; border-radius: 5px; text-align: left; font-size: 1.1em; }
-        #answer-display { border-left-color: #2ecc71; }
-        #completion-message { background-color: #e8f6f3; color: #1abc9c; border: 1px solid #1abc9c; padding: 20px; border-radius: 5px; }
-        .hidden { display: none; }
+        /* --- Even Blacker Night Mode Theme --- */
+        body { 
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; 
+            background-color: #000000; /* Pure black background */
+            color: #e9ecef; 
+            line-height: 1.6; 
+            padding: 20px; 
+            box-sizing: border-box; 
+        }
+        #quiz-container, #wrong-answers-container { 
+            background-color: #1c1c1c; /* Very dark gray container */
+            border-radius: 10px; 
+            box-shadow: none; /* Removed shadow for a flatter, modern look on black */
+            padding: 30px; 
+            width: 100%; 
+            max-width: 800px; 
+            margin: 20px auto; 
+            text-align: center; 
+            border: 1px solid #333; /* Darker, more subtle border */
+        }
+        h1, h2 { 
+            color: #ffffff; 
+        }
+        #progress-counter { 
+            color: #bdc3c7; 
+            font-weight: 500; 
+            margin-bottom: 20px; 
+        }
+        #question-display, #answer-display { 
+            background-color: #2b2b2b; /* Dark charcoal for question/answer */
+            border-left: 5px solid #3498db; 
+            padding: 20px; 
+            margin-top: 20px; 
+            min-height: 50px; 
+            border-radius: 5px; 
+            text-align: left; 
+            font-size: 1.1em; 
+        }
+        #answer-display { 
+            border-left-color: #2ecc71; 
+        }
+        #completion-message { 
+            background-color: rgba(46, 204, 113, 0.15); 
+            color: #2ecc71; 
+            border: 1px solid #2ecc71; 
+            padding: 20px; 
+            border-radius: 5px; 
+        }
+        
         .button-container { margin-top: 25px; display: flex; justify-content: center; gap: 15px; flex-wrap: wrap; }
-        button { background-color: #3498db; color: white; border: none; padding: 12px 25px; border-radius: 5px; font-size: 1em; cursor: pointer; transition: all 0.3s ease; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
-        button:hover { transform: translateY(-2px); box-shadow: 0 4px 8px rgba(0,0,0,0.15); }
+        .hidden { display: none; }
+
+        button { background-color: #3498db; color: white; border: none; padding: 12px 25px; border-radius: 5px; font-size: 1em; cursor: pointer; transition: all 0.3s ease; box-shadow: 0 2px 5px rgba(0,0,0,0.2); }
+        button:hover { transform: translateY(-2px); box-shadow: 0 4px 8px rgba(0,0,0,0.3); }
         button#show-answer-btn { background-color: #f1c40f; }
         button#show-answer-btn:hover { background-color: #f39c12; }
         button.correct-btn { background-color: #2ecc71; }
         button.correct-btn:hover { background-color: #27ae60; }
         button.incorrect-btn { background-color: #e74c3c; }
         button.incorrect-btn:hover { background-color: #c0392b; }
-        button#reset-progress-btn { background-color: #95a5a6; }
-        button#reset-progress-btn:hover { background-color: #7f8c8d; }
+        button#restart-btn { background-color: #95a5a6; }
+        button#restart-btn:hover { background-color: #7f8c8d; }
+        
+        #wrong-answers-list { list-style-type: none; padding: 0; text-align: left; }
+        #wrong-answers-list li { margin-bottom: 15px; }
+
+        details { 
+            border: 1px solid #333; 
+            border-radius: 5px; 
+            padding: 10px; 
+            background-color: #2b2b2b; 
+        }
+        summary { font-weight: bold; cursor: pointer; outline: none; }
+        details[open] summary { margin-bottom: 10px; }
     </style>
 </head>
 <body>
 
     <div id="quiz-container">
-        <h1>Sistema de Repetición Espaciada</h1>
-        <div id="stats-display"></div>
+        <h1>Vagabunderia INC.</h1>
         <div id="progress-counter" class="hidden"></div>
         
         <div id="question-display" class="hidden"></div>
         <div id="answer-display" class="hidden"></div>
-
         <div id="completion-message" class="hidden">
-            <h2>¡Sesión completada!</h2>
-            <p>Has terminado todas tus repasos por hoy. ¡Excelente trabajo! Vuelve mañana para continuar.</p>
-        </div>
-        
-        <div id="start-container" class="button-container">
-            <button id="start-btn">Iniciar Sesión de Repaso</button>
-        </div>
-        
-        <div id="answer-btn-container" class="button-container hidden">
-             <button id="show-answer-btn">Mostrar Respuesta</button>
+            <h2>¡Felicitaciones!</h2>
+            <p>Has completado todas las preguntas. Revisa la lista de abajo para repasar las que marcaste como incorrectas.</p>
         </div>
 
-        <div id="feedback-container" class="button-container hidden">
-            <button onclick="procesarRespuesta(5)" class="correct-btn">La tuve Buena</button>
-            <button onclick="procesarRespuesta(2)" class="incorrect-btn">La tuve Mala</button>
-        </div>
-        
-        <div id="next-btn-container" class="button-container hidden">
-            <button id="next-question-btn">Siguiente Pregunta</button>
-        </div>
-        
         <div class="button-container">
-            <button id="reset-progress-btn" class="hidden" onclick="resetearProgreso()">Reiniciar todo el progreso</button>
+            <button id="start-btn">Iniciar Cuestionario</button>
+            <button id="new-question-btn" class="hidden">Siguiente Pregunta</button>
+            <button id="show-answer-btn" class="hidden">Respuesta</button>
+            <div id="feedback-container" class="button-container hidden">
+                <button onclick="marcarRespuesta(true)" class="correct-btn">Buena</button>
+                <button onclick="marcarRespuesta(false)" class="incorrect-btn">Mala</button>
+            </div>
+            <button id="restart-btn" class="hidden">Reiniciar Progreso</button>
         </div>
     </div>
+    
+    <div id="wrong-answers-container" class="hidden">
+        <h2>Preguntas erroneas (sesión actual)</h2>
+        <ul id="wrong-answers-list"></ul>
+    </div>
 
-       <script>
+    <script>
         const cuestionarioMaestro = [
-            // ... (Tus 70 preguntas van aquí, no las he modificado) ...
             {
                 pregunta: "<b>1. Explique por qué los medios simbólicamente generalizados de comunicación pueden ser considerados un buen ejemplo de equivalentes funcionales.</b>",
                 respuesta: "El concepto de <b>equivalentes funcionales</b>, introducido por Robert K. Merton, postula que un mismo problema social puede ser resuelto de distintas maneras por diferentes mecanismos. Los <b>medios simbólicamente generalizados de comunicación (MSGC)</b> son un ejemplo paradigmático porque todos cumplen una misma función central, pero cada uno lo hace con una lógica distinta.<br><br>La función común que resuelven es la <b>improbabilidad de la validez</b> en la comunicación: lograr que el receptor acepte la comunicación. Los MSGC 'motivan la aceptación del otro con una mínima cantidad de comunicación', facilitando la coordinación.<br><br>La equivalencia funcional se manifiesta en que cada medio logra esto por vías diferentes:<br><ul><li><b>Dinero:</b> Motiva la aceptación a través del 'beneficio paralelo'. El receptor acepta por obtener un recurso monetario.</li><li><b>Poder:</b> Motiva la aceptación mediante la 'capacidad de sanción'. El receptor acepta para evitar una consecuencia negativa.</li><li><b>Amor/Confianza:</b> Motiva la aceptación de manera simbólica, fundada en un vínculo personal preexistente.</li><li><b>Verdad:</b> Motiva la aceptación a través de la evidencia y la percepción ('ver para creer').</li></ul>Por lo tanto, aunque sus mecanismos son heterogéneos, todos convergen en resolver el mismo problema fundamental de asegurar la aceptación para la coordinación social."
@@ -152,7 +199,7 @@
             },
             {
                 pregunta: "<b>22. NO VA.</b>",
-                respuesta: "Respuesta no disponible."
+                respuesta: "Respuesta no disponible. "
             },
             {
                 pregunta: "<b>23. Indique cuál es la importancia de la semántica de la corrupción para reconocer una sociedad funcionalmente diferenciada.</b>",
@@ -345,191 +392,262 @@
             {
                 pregunta: "<b>70. NO VA.</b>",
                 respuesta: "Respuesta no disponible."
+            }
         ];
 
         // --- Referencias a elementos del DOM ---
-        const startContainer = document.getElementById('start-container');
-        const answerBtnContainer = document.getElementById('answer-btn-container');
+        const startBtn = document.getElementById('start-btn');
+        const newQuestionBtn = document.getElementById('new-question-btn');
+        const showAnswerBtn = document.getElementById('show-answer-btn');
+        const restartBtn = document.getElementById('restart-btn');
         const feedbackContainer = document.getElementById('feedback-container');
-        const nextBtnContainer = document.getElementById('next-btn-container');
         const questionDisplay = document.getElementById('question-display');
         const answerDisplay = document.getElementById('answer-display');
+        const wrongAnswersContainer = document.getElementById('wrong-answers-container');
+        const wrongAnswersList = document.getElementById('wrong-answers-list');
         const progressCounter = document.getElementById('progress-counter');
         const completionMessage = document.getElementById('completion-message');
-        const statsDisplay = document.getElementById('stats-display');
-        const resetProgressBtn = document.getElementById('reset-progress-btn');
 
-        // --- Variables de estado ---
-        let reviewData = [];
-        let dueCards = [];
-        let currentCard = null;
-        let originalDueCount = 0;
+        // --- INICIO DE LA LÓGICA SM-2 ---
 
-        // --- LÓGICA DE SM-2 y la Aplicación ---
+        const QUIZ_STORAGE_KEY = 'vagabunderiaIncQuizData_SM2';
 
-        function getTodayString() {
+        // --- Funciones auxiliares para SM-2 ---
+
+        function getToday() {
             const today = new Date();
-            return today.toISOString().split('T')[0]; // Formato YYYY-MM-DD
+            today.setHours(0, 0, 0, 0);
+            return today;
         }
 
-        function cargarProgreso() {
-            const dataGuardada = localStorage.getItem(CUESTIONARIO_KEY);
-            if (dataGuardada) {
-                reviewData = JSON.parse(dataGuardada);
-            } else {
-                // Si no hay datos, inicializamos el progreso para cada pregunta
-                reviewData = cuestionarioMaestro
-                    .filter(q => !q.pregunta.includes("NO VA"))
-                    .map(q => ({
-                        id: q.id,
-                        easiness: 2.5,  // Factor de facilidad inicial
-                        interval: 0,    // Intervalo en días
-                        repetitions: 0, // Repeticiones correctas seguidas
-                        reviewDate: getTodayString() // La fecha de hoy para que aparezcan la primera vez
-                    }));
-                guardarProgreso();
-            }
+        function addDays(date, days) {
+            const result = new Date(date);
+            result.setDate(result.getDate() + days);
+            return result;
         }
 
-        function guardarProgreso() {
-            localStorage.setItem(CUESTIONARIO_KEY, JSON.stringify(reviewData));
-        }
-
-        function actualizarSM2(cardId, quality) {
-            const card = reviewData.find(c => c.id === cardId);
-            if (!card) return;
-
-            // El algoritmo SM-2 para actualizar el estado de la tarjeta
-            if (quality >= 3) { // Respuesta correcta
-                if (card.repetitions === 0) {
-                    card.interval = 1;
-                } else if (card.repetitions === 1) {
-                    card.interval = 6;
+        /**
+         * Implementación del algoritmo SM-2.
+         * @param {object} item - El objeto de la tarjeta con {n, ef, interval}.
+         * @param {number} quality - La calidad de la respuesta (0-5).
+         * @returns {object} El item actualizado con nuevos valores de n, ef, interval y nextReviewDate.
+         */
+        function sm2_calculate(item, quality) {
+            if (quality < 3) { // Respuesta incorrecta
+                item.n = 0;
+                item.interval = 1;
+            } else { // Respuesta correcta
+                item.n += 1;
+                if (item.n === 1) {
+                    item.interval = 1;
+                } else if (item.n === 2) {
+                    item.interval = 6;
                 } else {
-                    card.interval = Math.ceil(card.interval * card.easiness);
+                    item.interval = Math.ceil(item.interval * item.ef);
                 }
-                card.repetitions += 1;
-            } else { // Respuesta incorrecta
-                card.repetitions = 0;
-                card.interval = 1;
             }
 
-            // Actualizar el factor de facilidad
-            card.easiness = card.easiness + (0.1 - (5 - quality) * (0.08 + (5 - quality) * 0.02));
-            if (card.easiness < 1.3) card.easiness = 1.3;
+            // Actualizar el Factor de Facilidad (EF)
+            item.ef += (0.1 - (5 - quality) * (0.08 + (5 - quality) * 0.02));
+            if (item.ef < 1.3) {
+                item.ef = 1.3; // El EF mínimo es 1.3
+            }
 
-            // Calcular la nueva fecha de repaso
-            const hoy = new Date();
-            hoy.setDate(hoy.getDate() + card.interval);
-            card.reviewDate = hoy.toISOString().split('T')[0];
+            item.nextReviewDate = addDays(getToday(), item.interval);
+            return item;
         }
 
-        function iniciarSesion() {
-            const hoy = getTodayString();
-            dueCards = reviewData.filter(card => new Date(card.reviewDate) <= new Date(hoy));
-            originalDueCount = dueCards.length;
+        // --- Funciones de manejo de datos (localStorage) ---
 
-            startContainer.classList.add('hidden');
-            resetProgressBtn.classList.add('hidden');
-            statsDisplay.classList.add('hidden');
-            
-            if (originalDueCount === 0) {
-                finalizarSesion();
+        function loadDeck() {
+            const savedData = localStorage.getItem(QUIZ_STORAGE_KEY);
+            if (savedData) {
+                const parsedDeck = JSON.parse(savedData);
+                // Las fechas se guardan como string en JSON, hay que convertirlas de nuevo a objetos Date.
+                return parsedDeck.map(card => ({
+                    ...card,
+                    nextReviewDate: new Date(card.nextReviewDate)
+                }));
             } else {
-                progressCounter.classList.remove('hidden');
-                obtenerSiguientePregunta();
+                // Configuración inicial. Inicializar el mazo con propiedades SM-2.
+                return cuestionarioMaestro
+                    .filter(q => !q.pregunta.includes("NO VA")) // Filtrar preguntas inválidas
+                    .map(q => {
+                        const match = q.pregunta.match(/<b>(\d+)\./);
+                        const id = match ? parseInt(match[1]) : Math.random(); // Usar el número como ID único
+                        return {
+                            id: id,
+                            pregunta: q.pregunta,
+                            respuesta: q.respuesta,
+                            n: 0,              // Conteo de repeticiones
+                            ef: 2.5,           // Factor de Facilidad
+                            interval: 0,       // Intervalo en días
+                            nextReviewDate: getToday() // Todas las tarjetas están para repasar en la primera ejecución
+                        };
+                });
             }
         }
-        
-        function obtenerSiguientePregunta() {
+
+        function saveDeck(deckToSave) {
+            localStorage.setItem(QUIZ_STORAGE_KEY, JSON.stringify(deckToSave));
+        }
+
+        // --- Variables de estado de la aplicación ---
+        let deck = [];
+        let dueCards = [];
+        let preguntasMalasSesion = [];
+        let preguntaActual = null;
+        let totalDueInitial = 0; // Para mostrar el progreso de la sesión actual
+
+        // --- LÓGICA DE LA APLICACIÓN ---
+
+        document.addEventListener('DOMContentLoaded', function() {
+            startBtn.classList.remove('hidden');
+            newQuestionBtn.classList.add('hidden');
+            showAnswerBtn.classList.add('hidden');
+            feedbackContainer.classList.add('hidden');
+            restartBtn.classList.add('hidden');
+        });
+
+        function iniciarCuestionario() {
+            deck = loadDeck();
+            preguntasMalasSesion = [];
+            
+            const today = getToday();
+            dueCards = deck
+                .filter(card => card.nextReviewDate <= today)
+                .sort((a, b) => a.nextReviewDate - b.nextReviewDate); // Repasar las más antiguas primero
+
+            totalDueInitial = dueCards.length;
+
+            startBtn.classList.add('hidden');
+            restartBtn.classList.add('hidden');
+            completionMessage.classList.add('hidden');
+            wrongAnswersContainer.classList.add('hidden');
+            wrongAnswersList.innerHTML = '';
+            
+            if (dueCards.length > 0) {
+                progressCounter.classList.remove('hidden');
+                obtenerNuevaPregunta();
+            } else {
+                finalizarSesion(true); // true = no había tarjetas para hoy
+            }
+        }
+
+        function obtenerNuevaPregunta() {
             questionDisplay.classList.add('hidden');
             answerDisplay.classList.add('hidden');
             feedbackContainer.classList.add('hidden');
-            nextBtnContainer.classList.add('hidden');
-            
+            newQuestionBtn.classList.add('hidden');
+
             if (dueCards.length === 0) {
-                finalizarSesion();
+                finalizarSesion(false); // false = acabamos de terminar una sesión
                 return;
             }
 
-            // Seleccionar una tarjeta al azar de las pendientes
-            const randomIndex = Math.floor(Math.random() * dueCards.length);
-            const cardData = dueCards[randomIndex];
-            currentCard = cuestionarioMaestro.find(q => q.id === cardData.id);
+            preguntaActual = dueCards.shift(); // Obtener la siguiente tarjeta de la cola
             
             actualizarContador();
 
-            questionDisplay.innerHTML = currentCard.pregunta;
+            questionDisplay.innerHTML = preguntaActual.pregunta;
             questionDisplay.classList.remove('hidden');
-            answerBtnContainer.classList.remove('hidden');
+            showAnswerBtn.classList.remove('hidden');
         }
 
         function mostrarRespuesta() {
-            answerDisplay.innerHTML = `<b>Respuesta:</b><br>${currentCard.respuesta}`;
+            answerDisplay.innerHTML = preguntaActual.respuesta;
             answerDisplay.classList.remove('hidden');
-            
-            answerBtnContainer.classList.add('hidden');
+            showAnswerBtn.classList.add('hidden');
             feedbackContainer.classList.remove('hidden');
         }
 
-        function procesarRespuesta(quality) {
-            // Mapeamos "Buena" a q=5 y "Mala" a q=2 para el algoritmo
-            actualizarSM2(currentCard.id, quality);
-            guardarProgreso();
+        function marcarRespuesta(esCorrecta) {
+            // Mapear la respuesta booleana a una escala de calidad SM-2 (0-5)
+            // 5 = respuesta perfecta, se espaciará más.
+            // 2 = respuesta incorrecta, se mostrará de nuevo pronto.
+            const quality = esCorrecta ? 5 : 2;
 
-            // Quitar la tarjeta recién respondida de la lista de pendientes de la sesión actual
-            dueCards = dueCards.filter(c => c.id !== currentCard.id);
+            if (!esCorrecta) {
+                preguntasMalasSesion.push(preguntaActual);
+                actualizarVistaMalas();
+            }
+            
+            // Aplicar el algoritmo SM-2 a la tarjeta actual
+            const updatedItem = sm2_calculate(preguntaActual, quality);
+
+            // Encontrar y actualizar la tarjeta en el mazo principal
+            const indexInDeck = deck.findIndex(card => card.id === updatedItem.id);
+            if (indexInDeck !== -1) {
+                deck[indexInDeck] = updatedItem;
+            }
+
+            saveDeck(deck); // Guardar el progreso en localStorage
             
             feedbackContainer.classList.add('hidden');
             
             if (dueCards.length > 0) {
-                 nextBtnContainer.classList.remove('hidden');
+                 newQuestionBtn.classList.remove('hidden');
             } else {
-                 finalizarSesion();
+                 finalizarSesion(false);
             }
         }
         
-        function actualizarContador() {
-            const respondidas = originalDueCount - dueCards.length;
-            progressCounter.innerText = `Pregunta ${respondidas + 1} de ${originalDueCount} para hoy`;
+        function actualizarVistaMalas() {
+            if (preguntasMalasSesion.length > 0) {
+                wrongAnswersContainer.classList.remove('hidden');
+            } else {
+                wrongAnswersContainer.classList.add('hidden');
+            }
+            
+            wrongAnswersList.innerHTML = '';
+            
+            preguntasMalasSesion.forEach(q => {
+                const listItem = document.createElement('li');
+                listItem.innerHTML = `<details><summary>${q.pregunta}</summary><p>${q.respuesta}</p></details>`;
+                wrongAnswersList.appendChild(listItem);
+            });
         }
-
-        function finalizarSesion() {
+        
+        function actualizarContador() {
+            const questionsDone = totalDueInitial - dueCards.length - 1;
+            progressCounter.innerText = `Pregunta ${questionsDone + 1} de ${totalDueInitial}`;
+        }
+        
+        function finalizarSesion(noCardsWereDue) {
             questionDisplay.classList.add('hidden');
             answerDisplay.classList.add('hidden');
             progressCounter.classList.add('hidden');
-            nextBtnContainer.classList.add('hidden');
+            newQuestionBtn.classList.add('hidden');
             feedbackContainer.classList.add('hidden');
-            answerBtnContainer.classList.add('hidden');
+            showAnswerBtn.classList.add('hidden');
             
             completionMessage.classList.remove('hidden');
-            resetProgressBtn.classList.remove('hidden');
-            actualizarEstadisticas();
-        }
+            if (noCardsWereDue) {
+                completionMessage.innerHTML = `<h2>¡Buen trabajo!</h2><p>No tienes tarjetas para repasar hoy. ¡Vuelve mañana!</p>`;
+            } else {
+                completionMessage.innerHTML = `<h2>¡Sesión completada!</h2><p>Has repasado todas las tarjetas de hoy. Revisa la lista de abajo para repasar las que marcaste como incorrectas en esta sesión.</p>`;
+            }
 
-        function actualizarEstadisticas() {
-            const hoy = getTodayString();
-            const totalCards = reviewData.length;
-            const dueToday = reviewData.filter(card => new Date(card.reviewDate) <= new Date(hoy)).length;
-            statsDisplay.innerHTML = `Total de preguntas: ${totalCards}.<br>Pendientes para hoy: <b>${dueToday}</b>.`;
-            statsDisplay.classList.remove('hidden');
+            restartBtn.classList.remove('hidden');
+            
+            if (preguntasMalasSesion.length > 0) {
+                wrongAnswersContainer.classList.remove('hidden');
+            }
         }
-
-        function resetearProgreso() {
-            if (confirm("¿Estás seguro de que quieres borrar todo tu progreso? Esta acción no se puede deshacer.")) {
-                localStorage.removeItem(CUESTIONARIO_KEY);
-                location.reload();
+        
+        function reiniciarCuestionario() {
+            if (confirm("¿Estás seguro de que quieres reiniciar todo tu progreso? Esta acción borrará todas tus estadísticas de estudio y no se puede deshacer.")) {
+                localStorage.removeItem(QUIZ_STORAGE_KEY);
+                // Recargar la página para empezar desde un estado limpio
+                window.location.reload();
             }
         }
 
-        // --- Inicialización ---
-        document.addEventListener('DOMContentLoaded', () => {
-            cargarProgreso();
-            actualizarEstadisticas();
-            document.getElementById('start-btn').addEventListener('click', iniciarSesion);
-            document.getElementById('next-question-btn').addEventListener('click', obtenerSiguientePregunta);
-            document.getElementById('show-answer-btn').addEventListener('click', mostrarRespuesta);
-        });
+        // --- Event Listeners ---
+        startBtn.addEventListener('click', iniciarCuestionario);
+        newQuestionBtn.addEventListener('click', obtenerNuevaPregunta);
+        showAnswerBtn.addEventListener('click', mostrarRespuesta);
+        restartBtn.addEventListener('click', reiniciarCuestionario); // <- Actualizado
     </script>
 </body>
 </html>
